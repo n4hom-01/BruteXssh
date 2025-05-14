@@ -640,18 +640,24 @@ class SSHBruteforceWorker(QThread):
                 ssh.close()
                 return True
             except paramiko.AuthenticationException:
-                message = f"[-] Incorrect login: {password}"
-                self.status.emit(message)
-                logging.warning(message)
+                prev=""
+                message = f"[{target}:{port}] -> [Incorrect login: {password}]"
+                if prev!=message:
+                    self.status.emit(message)
+                    logging.warning(message)
+                    prev=message
                 break
             except socket.error as e:
-                message = f"[!] Connection error: {str(e)}"
-                self.status.emit(message)
-                logging.error(message)
+                prev2=""
+                message = f"[{target}:{port}] -> [Connection error: {str(e)}]"
+                if prev2!=message:
+                    self.status.emit(message)
+                    logging.error(message)
+                    prev2=message
                 attempt += 1
                 time.sleep(1)
             except Exception as e:
-                message = f"[!] Unexpected error: {str(e)}"
+                message = f"[{target}:{port}] -> [Unexpected error: {str(e)}]"
                 self.status.emit(message)
                 logging.error(message)
                 break
