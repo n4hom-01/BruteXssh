@@ -631,7 +631,7 @@ class SSHBruteforceWorker(QThread):
                     ssh.connect(target, port=port, username=username, password=password, timeout=self.timeout, sock=self.proxy)
                 else:
                     ssh.connect(target, port=port, username=username, password=password, timeout=self.timeout)
-                message = f"[+] Cracked: {username}@{target} with password: {password}"
+                message = f">>>> [Cracked: {username}@{target} with password: {password}] <<<<"
                 self.status.emit(message)
                 logging.info(message)
                 with open('successful_logins.csv', 'a') as csvfile:
@@ -654,6 +654,10 @@ class SSHBruteforceWorker(QThread):
                     self.status.emit(message)
                     logging.error(message)
                     prev2=message
+                else:
+                    rtmsg=f"[{target}:{port}] -> Retry Attempt {attempt}"
+                    self.status.emit(rtmsg)
+                    logging.error(rtmsg)
                 attempt += 1
                 time.sleep(1)
             except Exception as e:
