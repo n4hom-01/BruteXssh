@@ -657,9 +657,12 @@ class SSHBruteforceWorker(QThread):
                 attempt += 1
                 time.sleep(1)
             except Exception as e:
+                prev3=""
                 message = f"[{target}:{port}] -> [Unexpected error: {str(e)}]"
-                self.status.emit(message)
-                logging.error(message)
+                if prev3!=message:
+                    self.status.emit(message)
+                    logging.error(message)
+                    prev3=message
                 break
             finally:
                 ssh.close()
